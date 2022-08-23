@@ -17,10 +17,12 @@ export default class SearchApiServise {
 
 
     const url = `${base}?key=${key}&q=${this.searchQuery}&$image_type=${imageType}&orientation=${orientation}&safesearch=${safesearch}&page=${this.page}&per_page=40`)
-            fetch(url)
+            return fetch(url)
                 .then(response => response.json()
                     .then(data => {
+                        console.log(data);
                         this.page += 1;
+                        return data.hits;
                     }));
    
     }

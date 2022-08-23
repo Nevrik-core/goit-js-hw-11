@@ -19,14 +19,18 @@ refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
 function onSearch(e) {
   e.preventDefault();
-
+  refs.gallery.innerHTML = '';
    searchApiService.query = e.currentTarget.elements.search.value;
   // console.log(searchQuery);
   searchApiService.resetPage();
-  searchApiService.fetchPixabay();
+  searchApiService.fetchPixabay().then(appendPhotosMarkup);
   
 }
 
 function onLoadMore(e) {
-  searchApiService.fetchPixabay(); 
+  searchApiService.fetchPixabay().then(appendPhotosMarkup); 
+}
+
+function appendPhotosMarkup(hits) {
+  refs.gallery.insertAdjacentHTML('beforeend', photoCard(hits));
 }
