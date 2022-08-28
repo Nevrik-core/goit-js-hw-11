@@ -39,6 +39,8 @@ html {
 .search_container {
   // display: block;
   height: 100px;
+  position: fixed;
+  width: 100%;
   background: var(--color-dark);
   // display: block;
   margin: 0 auto;
@@ -130,6 +132,10 @@ label {
   cursor: pointer;
 }
 
+.load-more-btn.is-hidden {
+  display: none;
+}
+
 .photo-card img{
   // display: flex;
   width: 100%;
@@ -137,15 +143,19 @@ label {
   object-fit: cover;
   border-radius: var(--rad) var(--rad) var(--rad) var(--rad);
 }
+// gallery a {
+//   height: 100%;
+// }
+
 .gallery {
   display: grid;
   padding: 0 20px;
+  padding-top: 120px;
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: 320px;
   grid-auto-columns: 320px;
   gap: 60px 40px;
  
-  
 }
 
 

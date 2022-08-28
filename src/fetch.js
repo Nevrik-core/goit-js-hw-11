@@ -1,34 +1,27 @@
 
-
+// import Notiflix from 'notiflix';
 export default class SearchApiServise {
 
     constructor() {
         this.searchQuery = '';
-        this.page = 1;
     }
     
-    fetchPixabay() {
-    console.log(this);
-    const base = "https://pixabay.com/api/";
-    const imageType = 'photo';
-    const orientation = 'horizontal';
-    const safesearch = true;
-    const key = '29444128-664601f5e312d32a4879ca112';
+    async fetchPixabay(page, perPage) {
+        // console.log(this);
+        
+    const base = "https://pixabay.com/api/",
+          imageType = 'photo',
+          orientation = 'horizontal',
+          safesearch = true,
+          key = '29444128-664601f5e312d32a4879ca112';
 
 
-    const url = `${base}?key=${key}&q=${this.searchQuery}&$image_type=${imageType}&orientation=${orientation}&safesearch=${safesearch}&page=${this.page}&per_page=40`)
-            return fetch(url)
-                .then(response => response.json()
-                    .then(data => {
-                        console.log(data);
-                        this.page += 1;
-                        return data.hits;
-                    }));
-   
-    }
+        const url = `${base}?key=${key}&q=${this.searchQuery}&$image_type=${imageType}&orientation=${orientation}&safesearch=${safesearch}&page=${page}&per_page=${perPage}`;
+        
+        const response = await fetch(url);
+        const fetchImg = await response.json();
 
-    resetPage() {
-        this.page = 1;
+        return fetchImg;
     }
     
     get query() {
