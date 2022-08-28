@@ -29,7 +29,6 @@ function onSearch(e) {
   searchApiService.query = e.currentTarget.elements.search.value.trim();
   resetPage();
 
-
   if (searchApiService.query === '') {
     Notiflix.Notify.failure('The search string cannot be empty. Please specify your search query.');
     return;
