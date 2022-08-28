@@ -1,7 +1,6 @@
 import './css/styles.scss';
-import photoCard from "./templates/cards.hbs";
-import SearchApiServise from './fetch';
-import debounce from 'lodash.debounce';
+import SearchApiServise from './js/fetch';
+import { renderGallery } from './js/galleryRender';
 import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
@@ -17,6 +16,7 @@ const refs = {
 // console.log(refs.loadMoreBtn);
 
 let page = 1;
+let perPage = 40;
 let simpleLightBox;
  
 refs.searchForm.addEventListener('submit', onSearch);
@@ -35,44 +35,49 @@ function onSearch(e) {
     return;
   }
 
-  
-  const findImages = searchApiService.fetchPixabay(page, 40)
-    .then(data => {
-      Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-      page += 1;
-      return data.hits;
-    });
-  const renderToMarkup = findImages.then(appendPhotosMarkup);
-  simpleLightBox = new SimpleLightbox('.gallery a', {
-    
-    captionsData: 'alt',
-    captions: true,
-    captionType: 'attr',
-    captionDelay: 250
-    
-}).refresh();
-
-
-  setTimeout(() => { refs.loadMoreBtn.classList.remove('is-hidden'); }, 1000);
-  
+  searchApiService.fetchPixabay(page, perPage)
+    .then(( data ) => {
+      if (data.totalHits === 0) {
+        Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+      } else {
+        renderGallery(data.hits);
+        simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+        if (data.totalHits > perPage) {
+          setTimeout(() => { refs.loadMoreBtn.classList.remove('is-hidden'); }, 1000);
+        }
+      }
+    })
+    .catch(error => console.log(error));
 }
+
+
 
 function resetPage() {
   return page = 1;
 }
 
-function onLoadMore(e) {
-  // console.log(searchApiService.fetchPixabay().then(data => data));
-  searchApiService.fetchPixabay().then(images => {
-    // console.log(images);
-    appendPhotosMarkup(images);
-  }); 
+function onLoadMore() {
+  page += 1;
+        simpleLightBox.destroy()
+       
+  searchApiService.fetchPixabay(page, perPage)
+    .then((data) => {
+      renderGallery(data.hits)
+      simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+        
+      const totalPages = Math.ceil(data.totalHits / perPage);
+      if (page > totalPages) {
+                
+        refs.loadMoreBtn.classList.add('is-hidden');
+            
 
+        Notiflix.Notify.failure('We are sorry, but you have reached the end of search results.');
+      }
+    })
+    .catch(error => console.log(error));
 }
 
-function appendPhotosMarkup(hits) {
-  refs.gallery.insertAdjacentHTML('beforeend', photoCard(hits));
-}
 
 function clearGalleryContainer() {
   refs.gallery.innerHTML = '';
