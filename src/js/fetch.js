@@ -1,5 +1,4 @@
-
-// import Notiflix from 'notiflix';
+import axios from 'axios';
 export default class SearchApiServise {
 
     constructor() {
@@ -18,10 +17,10 @@ export default class SearchApiServise {
 
         const url = `${base}?key=${key}&q=${this.searchQuery}&$image_type=${imageType}&orientation=${orientation}&safesearch=${safesearch}&page=${page}&per_page=${perPage}`;
         
-        const response = await fetch(url);
-        const fetchImg = await response.json();
+        const response = await axios.get(url).then(response => response.data);
+        // const fetchImg = await response.json();
 
-        return fetchImg;
+        return response;
     }
     
     get query() {
