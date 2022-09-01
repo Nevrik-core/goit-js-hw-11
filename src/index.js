@@ -59,15 +59,18 @@ function resetPage() {
 function onLoadMore() {
   page += 1;
         simpleLightBox.destroy()
-       
+  // refs.loadMoreBtn.disabled = true;    
+  // refs.loadMoreBtn.style.backgroundColor = 'rgb(242, 169, 210)';
+  // refs.loadMoreBtn.style.cursor = 'progress';
   searchApiService.fetchPixabay(page, perPage)
     .then((data) => {
       renderGallery(data.hits)
       simpleLightBox = new SimpleLightbox('.gallery a').refresh();
         
       const totalPages = Math.ceil(data.totalHits / perPage);
-      if (page > totalPages) {
-                
+      console.log('page:', page, 'total pages:', totalPages, 'data hits:', data.hits);
+      if (page >= totalPages) {
+        console.log('page:', page, 'total pages:', totalPages, 'data hits:', data.hits);
         refs.loadMoreBtn.classList.add('is-hidden');
             
 
@@ -75,6 +78,10 @@ function onLoadMore() {
       }
     })
     .catch(error => console.log(error));
+  
+  // refs.loadMoreBtn.disabled = false;    
+  // refs.loadMoreBtn.style.backgroundColor = 'palevioletred';
+  // refs.loadMoreBtn.style.cursor = 'pointer';
 }
 
 
